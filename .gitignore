@@ -1,0 +1,26 @@
+# Node modules
+node_modules/
+
+# Logs
+*.log
+
+# Build output
+.next/
+build/
+dist/
+
+# Testing
+coverage/
+
+# Env files
+.env*
+
+# Editor config
+.vscode/
+.idea/
+
+# macOS
+.DS_Store
+
+# TypeScript
+*.tsbuildinfo
