@@ -32,16 +32,19 @@ import {
 } from "../../../components/ui/select";
 import { Plus, Pencil, Trash } from "lucide-react";
 import { Alert, AlertDescription } from "../../../components/ui/alert";
-import { getTasks, createTask, updateTask, deleteTask, getEmployees } from "../../../utils/api";
-import type { Task, Employee } from "../../../utils/api";
+import {
+  getTasks,
+  createTask,
+  updateTask,
+  deleteTask,
+  getEmployees,
+} from "../../../utils/api";
+import type { Task, Employee, TaskInput } from "../../../utils/api";
 
-interface FormData {
-  title: string;
-  description: string;
-  assignedTo: string;
-  status: 'pending' | 'in-progress' | 'completed';
-  priority: 'low' | 'medium' | 'high';
-  dueDate: string;
+interface FormData
+  extends Omit<TaskInput, "createdBy" | "status" | "priority"> {
+  status: "pending" | "in-progress" | "completed";
+  priority: "low" | "medium" | "high";
 }
 
 const initialFormData: FormData = {
@@ -233,13 +236,15 @@ export default function TasksPage() {
 
   const handleAddTask = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!user) return;
     try {
       setLoading(true);
       setError("");
-      const response = await createTask({
+      const taskData: Partial<TaskInput> = {
         ...formData,
-        createdBy: user?.id
-      });
+        createdBy: user.id,
+      };
+      const response = await createTask(taskData);
       
       if (!response.success) {
         throw new Error(response.message || 'Failed to create task');
@@ -262,7 +267,8 @@ export default function TasksPage() {
     try {
       setLoading(true);
       setError("");
-      const response = await updateTask(selectedTask._id, formData);
+      const taskData: Partial<TaskInput> = { ...formData };
+      const response = await updateTask(selectedTask._id, taskData);
       
       if (!response.success) {
         throw new Error(response.message || 'Failed to update task');
@@ -309,7 +315,7 @@ export default function TasksPage() {
       assignedTo: task.assignedTo._id,
       status: task.status,
       priority: task.priority,
-      dueDate: new Date(task.dueDate).toISOString().split('T')[0]
+      dueDate: new Date(task.dueDate).toISOString().split("T")[0],
     });
     setIsEditDialogOpen(true);
   };

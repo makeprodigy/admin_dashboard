@@ -34,6 +34,11 @@ export interface Task {
   createdBy: string;
 }
 
+export type TaskInput = Omit<Task, 'assignedTo' | '_id' | 'createdBy'> & {
+  assignedTo: string;
+  createdBy?: string;
+};
+
 export async function apiFetch<T>(
   endpoint: string,
   options?: RequestInit
@@ -117,14 +122,14 @@ export const getTasks = async (): Promise<ApiResponse<Task[]>> => {
   return apiFetch('/tasks');
 };
 
-export const createTask = async (taskData: Partial<Task>): Promise<ApiResponse<Task>> => {
+export const createTask = async (taskData: Partial<TaskInput>): Promise<ApiResponse<Task>> => {
   return apiFetch('/tasks', {
     method: 'POST',
     body: JSON.stringify(taskData),
   });
 };
 
-export const updateTask = async (id: string, taskData: Partial<Task>): Promise<ApiResponse<Task>> => {
+export const updateTask = async (id: string, taskData: Partial<TaskInput>): Promise<ApiResponse<Task>> => {
   return apiFetch(`/tasks/${id}`, {
     method: 'PUT',
     body: JSON.stringify(taskData),
