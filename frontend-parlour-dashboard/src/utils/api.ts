@@ -8,7 +8,7 @@ interface ApiResponse<T> {
   token?: string;
 }
 
-interface Employee {
+export interface Employee {
   _id: string;
   name: string;
   email: string;
@@ -19,7 +19,7 @@ interface Employee {
   currentStatus: 'in' | 'out';
 }
 
-interface Task {
+export interface Task {
   _id: string;
   title: string;
   description: string;
